@@ -1,5 +1,6 @@
-# Commands required to setup working docker enviro, link
-# containers etc.
+# Vagrantfile for Opps enviroment with docker containers
+# Guilherme Rezende <guilhermebr@gmail.com>
+# Campus Party Team
 
 $setup = <<SCRIPT
 locale-gen en_US.UTF-8
@@ -9,7 +10,7 @@ easy_install pip
 cd /app
 git clone https://github.com/opps/opps.git
 cd opps
-python setup.py develop
+python setup.py deveslop
 SCRIPT
 
 
@@ -55,14 +56,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # need a private network for NFS shares to work
   config.vm.network "private_network", ip: "192.168.50.4"
 
-  # Rails Server Port Forwarding
-  config.vm.network "forwarded_port", guest: 8000, host: 8080
+  # Django Server Port Forwarding
+  config.vm.network "forwarded_port", guest: 8000, host: 8000
 
   # Install latest docker
   config.vm.provision "docker"
 
-  # Must use NFS for this otherwise rails
-  # performance will be awful
+  # Must use NFS for performance
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.synced_folder ".", "/app", type: "nfs"
 
