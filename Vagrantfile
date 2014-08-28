@@ -5,25 +5,26 @@
 $setup = <<SCRIPT
 locale-gen en_US.UTF-8
 apt-get update
-apt-get install build-essential git-core python python-dev python-setuptools
+apt-get install -y build-essential git-core python python-dev python-setuptools
 easy_install pip
 cd /app
 git clone https://github.com/opps/opps.git
 cd opps
-python setup.py deveslop
+python setup.py develop
 SCRIPT
 
 
 $containers = <<SCRIPT
 # Stop and remove any existing containers
-docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
+#docker stop $(docker ps -a -q)
+#docker rm $(docker ps -a -q)
 
 # Build opps base container from Dockerfiles
 docker build -t opps /app/dockerfiles/opps
 
 # Build container running Example
-docker build -t opps/example /app/opps/example
+cp /app/dockerfiles/example/Dockerfile opps/example/
+docker build -t opps/example ./opps/example 
 
 # Run and link the containers
 docker run -d --name opps_postgres -e POSTGRESQL_USER=opps -e POSTGRESQL_PASS=opps postgres
@@ -64,7 +65,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Must use NFS for performance
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.synced_folder ".", "/app", type: "nfs"
+  #config.vm.synced_folder ".", "/app" , type: "nfs"
+
+  ## If having trouble with nfs:
+  config.vm.synced_folder ".", "/app"
+
 
   # Setup the containers when the VM is first
   # created
