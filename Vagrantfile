@@ -20,11 +20,17 @@ $containers = <<SCRIPT
 #docker rm $(docker ps -a -q)
 
 # Build opps base container from Dockerfiles
-docker build -t opps /app/dockerfiles/opps
+docker build -t="opps" /app/dockerfiles/opps
 
 # Build container running Example
-cp /app/dockerfiles/example/Dockerfile opps/example/
-docker build -t opps/example ./opps/example 
+cp /app/templates/Dockerfile /app/opps/example/
+cp /app/templates/local_settings.py /app/opps/example/example
+docker build -t opps/example /app/opps/example 
+
+# To create a Container for a project:
+#  cp /app/templates/Dockerfile $PROJECT_DIR
+#  cp /app/templates/local_settings.py $PROJECT_FOLDER/$PROJECT_APP
+#  docker build -t $PROJECT_NAME $PROJECT_DIR
 
 # Run and link the containers
 docker run -d --name opps_postgres -e POSTGRESQL_USER=opps -e POSTGRESQL_PASS=opps postgres
@@ -41,12 +47,15 @@ SCRIPT
 
 VAGRANTFILE_API_VERSION = "2"
 
-box      = 'ubuntu/trusty64'
+box      = 'trusty64'
+url      = 'https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box'
+
 memory   = 2048
 cpus     = 2
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config| 
-  config.vm.box = box
+  config.vm.box     = box
+  config.vm.box_url = url
 
   # Setup resource requirements
   config.vm.provider "virtualbox" do |v|
@@ -65,10 +74,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Must use NFS for performance
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  #config.vm.synced_folder ".", "/app" , type: "nfs"
+  config.vm.synced_folder ".", "/app" , type: "nfs"
 
   ## If having trouble with nfs:
-  config.vm.synced_folder ".", "/app"
+  #config.vm.synced_folder ".", "/app"
 
 
   # Setup the containers when the VM is first
