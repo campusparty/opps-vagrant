@@ -1,4 +1,4 @@
-FROM opps
+FROM opps/opps-docker
 
 maintainer Guilherme Rezende <guilhermebr@gmail.com>
 

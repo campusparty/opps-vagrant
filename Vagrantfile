@@ -30,8 +30,8 @@ docker pull redis:latest
 # Get Nginx Container (https://github.com/docker-library/nginx)
 docker pull nginx:latest
 
-# Build opps base container from github repo
-docker build -t opps github.com/campusparty/opps-docker.git
+# Get Opps base Container (github.com/opps/opps-docker)
+docker pull opps/opps-docker:latest
 
 # Run Postgres Container
 docker run -d --name opps_postgres -h "db.local" -v /var/lib/postgresql/data:/opt/postgres postgres
