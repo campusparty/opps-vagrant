@@ -10,7 +10,7 @@ python manage.py collectstatic --noinput
 echo "[run] create superuser"
 echo "from django.contrib.auth.models import User
 if not User.objects.filter(username='admin').count():
-    User.objects.create_superuser('admin', 'admin@example.com', 'pass1234@example')
+    User.objects.create_superuser('admin', 'admin@example.com', 'pass123')
 " | python manage.py shell
 
 echo "[run] runserver"
